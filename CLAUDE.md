@@ -19,8 +19,8 @@
 ## 流水线（旁白优先）
 
 ```
-文章 URL → [用户三选] → 写旁白文本 → TTS 合成
-         → 计算场景时序 → 写 index.html → lint → render
+文章 URL → [用户三选] → 写旁白文本 → 旁白校对（LLM 自校验）
+         → TTS 合成 → 计算场景时序 → 写 index.html → lint → render
 ```
 
 详细步骤见 `PIPELINE.md`。
