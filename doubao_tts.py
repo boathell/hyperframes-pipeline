@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 """
 Volcano Engine Seed-TTS WebSocket synthesizer (旧版控制台鉴权).
-Usage: python3 doubao_tts.py <text> <output.wav> [speech_rate]
+
+Usage:
+  python3 doubao_tts.py --pick-voice
+      Print a randomly selected voice and exit. Use this once per project to
+      fix the voice, then pass it to every synthesis call.
+
+  python3 doubao_tts.py <text> <output.wav> [speech_rate] [voice]
+      Synthesize text to WAV. If voice is omitted, randomly selects one.
+
 speech_rate: -50~100, 0=normal, positive=faster, negative=slower
 
 Reads credentials and voice list from .env in the same directory as this script.
@@ -43,7 +51,7 @@ VOICES = [v for v in _env.get('APP_YINSE', '').split(',') if v] or [
     "zh_female_tianmeitaozi_uranus_bigtts",
     "zh_female_yingyujiaoxue_uranus_bigtts",
 ]
-VOICE  = random.choice(VOICES)
+_DEFAULT_VOICE = random.choice(VOICES)
 
 EVT_SESSION_DONE = 152
 
@@ -51,7 +59,8 @@ def build_frame(payload_dict):
     data = json.dumps(payload_dict, ensure_ascii=False).encode()
     return b'\x11\x10\x10\x00' + struct.pack('>I', len(data)) + data
 
-async def synth(text: str, out_path: str, speech_rate: int = 0) -> None:
+async def synth(text: str, out_path: str, speech_rate: int = 0, voice: str = '') -> None:
+    voice = voice or _DEFAULT_VOICE
     auth_headers = {
         'X-Api-App-Id':      APPID,
         'X-Api-Access-Key':  TOKEN,
@@ -62,7 +71,7 @@ async def synth(text: str, out_path: str, speech_rate: int = 0) -> None:
         'user': {'uid': 'narration_user'},
         'req_params': {
             'text': text,
-            'speaker': VOICE,
+            'speaker': voice,
             'audio_params': {
                 'format': 'wav',
                 'sample_rate': 24000,
@@ -122,13 +131,18 @@ async def synth(text: str, out_path: str, speech_rate: int = 0) -> None:
     with open(out_path, 'wb') as f:
         f.write(audio)
     print(f'[OK] {out_path}: {len(audio):,} bytes', flush=True)
-    print(f'[VOICE] {VOICE}', flush=True)
+    print(f'[VOICE] {voice}', flush=True)
 
 if __name__ == '__main__':
+    if len(sys.argv) >= 2 and sys.argv[1] == '--pick-voice':
+        print(_DEFAULT_VOICE, flush=True)
+        sys.exit(0)
     if len(sys.argv) < 3:
-        sys.exit(f'Usage: {sys.argv[0]} <text> <output.wav> [speech_rate]')
+        sys.exit(f'Usage: {sys.argv[0]} --pick-voice\n'
+                 f'       {sys.argv[0]} <text> <output.wav> [speech_rate] [voice]')
     asyncio.run(synth(
         text=sys.argv[1],
         out_path=sys.argv[2],
         speech_rate=int(sys.argv[3]) if len(sys.argv) > 3 else 0,
+        voice=sys.argv[4] if len(sys.argv) > 4 else '',
     ))

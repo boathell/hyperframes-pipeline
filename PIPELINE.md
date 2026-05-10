@@ -57,17 +57,19 @@ HyperFrames/
 ```bash
 cd output/<project-name>
 
-# 单段（speech_rate=0 测实际时长）
-python3 ../../doubao_tts.py "$(cat assets/narration-s1.txt)" assets/narration-s1.wav 0
+# 第一步：为本项目选定一个音色（整个项目只执行一次）
+VOICE=$(python3 ../../doubao_tts.py --pick-voice)
+echo "本项目音色：$VOICE"
 
-# 3 并发（适合 ≤6 段）
+# 第二步：所有段使用同一音色合成（3 并发，适合 ≤6 段）
 for i in 1 2 3; do
-  python3 ../../doubao_tts.py "$(cat assets/narration-s${i}.txt)" assets/narration-s${i}.wav 0 &
+  python3 ../../doubao_tts.py "$(cat assets/narration-s${i}.txt)" assets/narration-s${i}.wav 0 "$VOICE" &
 done
 wait
+# 剩余段同理，继续传入 $VOICE
 ```
 
-合成完后输出 `[VOICE] <选中音色>`，音色从 `.env` 的 `APP_YINSE` 列表随机选取。
+合成完后每段输出 `[VOICE] <音色>`，全部一致。渲染完成后告知用户选中的是哪个音色。
 
 ### 修改音色列表
 
