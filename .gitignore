@@ -1,0 +1,19 @@
+# 凭证（绝不提交）
+.env
+
+# 视频项目输出（音频、视频文件太大）
+output/
+
+# HyperFrames 框架源码（独立 repo）
+hyperframes/
+
+# 本地工具运行时状态
+.agents/
+.claude/
+.omx/
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
