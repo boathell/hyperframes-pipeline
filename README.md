@@ -66,7 +66,7 @@ mkdir -p assets
 
 ```bash
 VOICE=$(python3 ../../doubao_tts.py --pick-voice)
-python3 ../../doubao_tts.py "$(cat assets/narration-s1.txt)" assets/narration-s1.wav 0 "$VOICE"
+python3 ../../doubao_tts.py "$(cat assets/narration-s1.txt)" assets/narration-s1.wav 10 "$VOICE"
 ```
 
 一个项目应固定使用同一个 `VOICE`，避免不同片段声音不一致。

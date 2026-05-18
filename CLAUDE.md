@@ -44,7 +44,7 @@ mkdir -p assets
 
 ```bash
 # 在项目目录内调用，脚本路径相对于工作区根
-python3 ../../doubao_tts.py "$(cat assets/narration-s1.txt)" assets/narration-s1.wav 0
+python3 ../../doubao_tts.py "$(cat assets/narration-s1.txt)" assets/narration-s1.wav 10
 ```
 
 合成完后输出 `[VOICE] <选中音色>`，每次随机从 `.env` 的 `APP_YINSE` 中选取。

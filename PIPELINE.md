@@ -92,7 +92,7 @@ echo "本项目音色：$VOICE"
 
 # 第二步：所有段使用同一音色合成（3 并发，适合 ≤6 段）
 for i in 1 2 3; do
-  python3 ../../doubao_tts.py "$(cat assets/narration-s${i}.txt)" assets/narration-s${i}.wav 0 "$VOICE" &
+  python3 ../../doubao_tts.py "$(cat assets/narration-s${i}.txt)" assets/narration-s${i}.wav 10 "$VOICE" &
 done
 wait
 # 剩余段同理，继续传入 $VOICE
@@ -134,7 +134,7 @@ total_duration = round(t - INTER_GAP + TAIL, 1)
 
 | 检查 | 标准 | 处理 |
 |------|------|------|
-| 过短 | 实际时长 < 估算窗口 70% | 扩写旁白文本（约翻倍），rate=0 重合成 |
+| 过短 | 实际时长 < 估算窗口 70% | 扩写旁白文本（约翻倍），rate=10 重合成 |
 | 过长 | 实际时长 > 估算窗口 100% | 计算 speech_rate 加速重合成 |
 | 正常 | 70%–100% | ✓ 直接用 |
 

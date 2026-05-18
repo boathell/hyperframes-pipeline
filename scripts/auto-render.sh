@@ -73,7 +73,7 @@ for MARKER in "${MARKERS[@]}"; do
       WAV="$PROJ_DIR/assets/narration-s${i}.wav"
       [ -f "$TXT" ] || continue
       log "  TTS S$i start"
-      "$PYTHON" "$WORKSPACE/doubao_tts.py" "$(cat "$TXT")" "$WAV" 0 "$VOICE" >>"$LOG" 2>&1 &
+      "$PYTHON" "$WORKSPACE/doubao_tts.py" "$(cat "$TXT")" "$WAV" 10 "$VOICE" >>"$LOG" 2>&1 &
       PIDS+=($!)
     done
     for pid in "${PIDS[@]}"; do
