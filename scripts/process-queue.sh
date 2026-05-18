@@ -175,8 +175,13 @@ URL: $URL
 
 2. 创建项目目录（在 $WORKSPACE/output/ 下执行）
    cd $WORKSPACE/output
-   npx hyperframes@0.5.6 init $PROJ_NAME
+   npx hyperframes@latest init $PROJ_NAME
    cd $PROJ_NAME
+   npm pkg set \
+     scripts.dev="npx --yes hyperframes@latest preview" \
+     scripts.check="npx --yes hyperframes@latest lint && npx --yes hyperframes@latest validate && npx --yes hyperframes@latest inspect" \
+     scripts.render="npx --yes hyperframes@latest render" \
+     scripts.publish="npx --yes hyperframes@latest publish"
    npm install
    mkdir -p assets
 

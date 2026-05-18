@@ -29,8 +29,13 @@
 
 ```bash
 cd output
-npx hyperframes@0.5.6 init <project-name>
+npx hyperframes@latest init <project-name>
 cd <project-name>
+npm pkg set \
+  scripts.dev="npx --yes hyperframes@latest preview" \
+  scripts.check="npx --yes hyperframes@latest lint && npx --yes hyperframes@latest validate && npx --yes hyperframes@latest inspect" \
+  scripts.render="npx --yes hyperframes@latest render" \
+  scripts.publish="npx --yes hyperframes@latest publish"
 npm install
 mkdir -p assets
 ```
