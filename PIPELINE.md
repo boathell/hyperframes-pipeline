@@ -158,6 +158,121 @@ speech_rate 计算：`int((actual / max_allowed - 1) * 100) + 8`
 
 ---
 
+## 竖屏布局规范（1080×1920）
+
+### 1. 场景布局（必须）
+
+```css
+/* ✅ 正确：内容从顶部自然流下，填满纵向空间 */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;   /* 不得用 center */
+  align-items: stretch;
+  padding: 130px 72px 100px;     /* 上留 130px 给 topbar */
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ❌ 错误：产生上下大片空白 */
+.scene {
+  justify-content: center;
+  align-items: center;
+  padding: 80px 64px;
+}
+```
+
+### 2. 持久化 Topbar（必须）
+
+每个竖屏项目必须在 `#main` 顶部加 absolute 定位的 topbar，z-index 高于所有 scene：
+
+```html
+<div class="topbar">
+  <span class="topbar-topic">话题标签</span>
+  <span class="topbar-brand">HyperFrames</span>
+</div>
+```
+
+```css
+.topbar {
+  position: absolute;
+  top: 48px; left: 72px; right: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  font-size: 26px;
+  font-weight: 700;
+}
+```
+
+### 3. 字号规范（上限 + 下限）
+
+1080×1920 视频在手机全屏播放时，宽度缩放比约 **0.36×**（1080px → ~390pt 手机逻辑宽度）。字号必须同时满足上下限。
+
+| 元素 | 最小字号 | 最大字号 | 手机实际 pt | 说明 |
+|------|---------|----------|------------|------|
+| 大标题 `.scene-keyword` / `h1` | **80px** | **96px** | 29–35pt | 过大吃纵向空间，过小失去冲击力 |
+| 正文 `.scene-body` | **48px** | **56px** | 17–20pt | 44px 以下在手机上贴近极限 |
+| 场景标签 `.scene-num` / `.kicker` | **36px** | **42px** | 13–15pt | 28px 以下（~10pt）难以辨认 |
+| 卡片内正文（步骤描述、对比文字等） | **34px** | **44px** | 12–16pt | 28px 以下不允许出现 |
+| 卡片内次级文字（说明、日期等） | **28px** | **34px** | 10–12pt | 仅限辅助信息，不承载关键内容 |
+
+> ⚠️ **禁止**：关键信息使用 28px 以下字号（~10pt，手机上无法看清）。
+
+### 4. 安全区（社交平台 UI 遮挡）
+
+TikTok / Instagram / YouTube Shorts 的 UI 控件会遮挡画面边缘：
+
+| 区域 | 遮挡高度 | 处理方式 |
+|------|---------|---------|
+| 顶部（平台 logo/状态栏） | ~100px | topbar 下移至 `top: 110px` |
+| 底部（点赞/评论/分享按钮） | ~240px | watermark 上移至 `bottom: 260px`；内容底部 padding ≥ 260px |
+| 左右（用户名/描述文字） | ~20px 各 | 左右 padding ≥ 72px（已满足） |
+
+```css
+/* 安全区适配后的 topbar */
+.topbar { top: 110px; }
+
+/* 安全区适配后的 scene */
+.scene { padding: 160px 72px 270px; }
+
+/* watermark */
+.watermark { bottom: 260px; }
+```
+
+### 5. 每个场景必须有视觉组件（必须）
+
+**规则**：每个场景除标题 + 正文以外，**至少有一个视觉组件**。纯文字场景不允许出现。
+
+| 场景内容类型 | 推荐组件 |
+|---|---|
+| 对比 / 讽刺 | 期望 vs 现实对比卡（2 行，绿色 / 红色调） |
+| 流程 / 步骤 | 编号步骤卡列表 |
+| 数据 / 统计 | stat-block 大数字 + 数据类型标签组 |
+| 概念 / 原理 | 流程图（box → arrow → box） |
+| 警示 / 风险 | warning-box（红色描边卡） |
+| 行动号召 | cta-card（渐变背景 + 图标 + 说明） |
+| 身份 / 关联 | id-bind-card（绑定示意图） |
+| 时间线 | tl-item 列表（阶段 + 描述） |
+
+### 6. 场景自检清单
+
+写完每个场景后，确认以下全部通过：
+
+- [ ] 场景有非文字视觉组件
+- [ ] `.scene` 使用 `justify-content: flex-start`
+- [ ] 大标题字号在 80–96px 之间
+- [ ] 正文字号 ≥ 48px
+- [ ] 场景标签字号 ≥ 36px；无任何关键文字 < 28px
+- [ ] topbar 在 `top: 110px`，z-index > 所有 scene
+- [ ] scene padding-bottom ≥ 260px（底部安全区）
+- [ ] 内容填满约 70% 以上纵向空间（无大片空白）
+
+---
+
 ## 新建项目
 
 ```bash

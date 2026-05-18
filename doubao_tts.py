@@ -13,10 +13,10 @@ Usage:
 speech_rate: -50~100, 0=normal, positive=faster, negative=slower
 
 Reads credentials and voice list from .env in the same directory as this script.
-Falls back to hardcoded values if .env is not found.
+APP_ID and APP_TOKEN are required.
 
 .env format:
-  APP_ID=3009090267
+  APP_ID=your_app_id
   APP_TOKEN=xxxxx
   RESOURCE_ID=seed-tts-2.0
   APP_YINSE=voice1,voice2,...
@@ -40,8 +40,8 @@ def _load_env():
     return env
 
 _env   = _load_env()
-APPID  = _env.get('APP_ID',      '3009090267')
-TOKEN  = _env.get('APP_TOKEN',   '7nrVbOSGR_VYCzMct8L6_4qib583ytQf')
+APPID  = _env.get('APP_ID', '')
+TOKEN  = _env.get('APP_TOKEN', '')
 RES_ID = _env.get('RESOURCE_ID', 'seed-tts-2.0')
 VOICES = [v for v in _env.get('APP_YINSE', '').split(',') if v] or [
     "zh_female_sophie_uranus_bigtts",
@@ -55,11 +55,19 @@ _DEFAULT_VOICE = random.choice(VOICES)
 
 EVT_SESSION_DONE = 152
 
+def _require_credentials():
+    missing = [name for name, value in (('APP_ID', APPID), ('APP_TOKEN', TOKEN)) if not value]
+    if missing:
+        raise RuntimeError(
+            f"Missing {', '.join(missing)}. Configure credentials in .env next to doubao_tts.py."
+        )
+
 def build_frame(payload_dict):
     data = json.dumps(payload_dict, ensure_ascii=False).encode()
     return b'\x11\x10\x10\x00' + struct.pack('>I', len(data)) + data
 
 async def synth(text: str, out_path: str, speech_rate: int = 0, voice: str = '') -> None:
+    _require_credentials()
     voice = voice or _DEFAULT_VOICE
     auth_headers = {
         'X-Api-App-Id':      APPID,

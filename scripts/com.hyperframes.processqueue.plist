@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.hyperframes.processqueue</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/dingfeng/Documents/vibe-coding/HyperFrames/scripts/process-queue.sh</string>
+  </array>
+
+  <!-- 每天凌晨 2:30 执行 -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>2</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/dingfeng/Documents/vibe-coding/HyperFrames/scripts/process-queue.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/dingfeng/Documents/vibe-coding/HyperFrames/scripts/process-queue.log</string>
+
+  <!-- 确保 homebrew / system 工具可访问 -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>HOME</key>
+    <string>/Users/dingfeng</string>
+  </dict>
+</dict>
+</plist>

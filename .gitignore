@@ -10,10 +10,15 @@ hyperframes/
 # 本地工具运行时状态
 .agents/
 .claude/
+.firecrawl/
 .omx/
+scripts/*.log
 
 # macOS
 .DS_Store
 
 # Node
 node_modules/
+
+# Python
+__pycache__/
